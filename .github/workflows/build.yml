@@ -15,5 +15,5 @@ jobs:
     with:
       DOTNET_VERSION: 10.0.x
       SOLUTION_PATH: Source/Kuva.Auth.sln
-      SOLUTION_KEY: Kuva-app_backend-auth
+      SOLUTION_KEY: Kuva-app_backend-oauth
     secrets: inherit
