@@ -1,0 +1,49 @@
+services:
+  kuva-auth-service:
+    build:
+      context: .
+      dockerfile: Source/Kuva.Auth.Service/Dockerfile
+    container_name: kuva-auth-service
+    depends_on:
+      - kuva-auth-sqlserver
+    environment:
+      ASPNETCORE_ENVIRONMENT: Development
+      ASPNETCORE_URLS: http://+:8080
+      ConnectionStrings__AuthDatabase: Server=kuva-auth-sqlserver,1433;Database=KuvaAuth;User Id=sa;Password=Your_strong_password123;TrustServerCertificate=True
+      Jwt__Issuer: http://localhost:8081/auth
+      Jwt__Audience: kuva-api
+      Jwt__KeyId: kuva-auth-local
+    ports:
+      - "8081:8080"
+
+  kuva-auth-sqlserver:
+    image: mcr.microsoft.com/mssql/server:2022-latest
+    container_name: kuva-auth-sqlserver
+    environment:
+      ACCEPT_EULA: "Y"
+      MSSQL_SA_PASSWORD: Your_strong_password123
+    ports:
+      - "1433:1433"
+    volumes:
+      - kuva-auth-sql-data:/var/opt/mssql
+
+  prometheus:
+    image: prom/prometheus:latest
+    container_name: kuva-auth-prometheus
+    ports:
+      - "9090:9090"
+    volumes:
+      - ./prometheus.yml:/etc/prometheus/prometheus.yml:ro
+      - ./alert_rules.yml:/etc/prometheus/alert_rules.yml:ro
+
+  grafana:
+    image: grafana/grafana:latest
+    container_name: kuva-auth-grafana
+    ports:
+      - "3000:3000"
+    environment:
+      GF_SECURITY_ADMIN_USER: admin
+      GF_SECURITY_ADMIN_PASSWORD: admin
+
+volumes:
+  kuva-auth-sql-data:

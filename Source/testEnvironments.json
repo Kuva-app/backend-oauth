@@ -1,0 +1,5 @@
+{
+  "local": {
+    "AuthDatabase": "Server=localhost,1433;Database=KuvaAuth;User Id=sa;Password=Your_strong_password123;TrustServerCertificate=True"
+  }
+}
