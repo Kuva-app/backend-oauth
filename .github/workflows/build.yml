@@ -14,6 +14,6 @@ jobs:
     uses: Kuva-app/kuva-ci/.github/workflows/quality-gate-pr-dotnet.yml@master
     with:
       DOTNET_VERSION: 10.0.x
-      SOLUTION_PATH: Source/Kuva.Notifications.sln
-      SOLUTION_KEY: Kuva-app_backend-notifications
+      SOLUTION_PATH: Source/Kuva.Auth.sln
+      SOLUTION_KEY: Kuva-app_backend-auth
     secrets: inherit
