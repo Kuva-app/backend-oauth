@@ -1,0 +1,26 @@
+groups:
+  - name: kuva-auth-alerts
+    rules:
+      - alert: KuvaAuthHighLoginFailureRate
+        expr: increase(kuva_auth_login_failed_total[5m]) > 20
+        for: 5m
+        labels:
+          severity: warning
+        annotations:
+          summary: "Alta taxa de falha de login no Kuva Auth Service"
+
+      - alert: KuvaAuthServiceDown
+        expr: up{job="kuva-auth-service"} == 0
+        for: 1m
+        labels:
+          severity: critical
+        annotations:
+          summary: "Kuva Auth Service indisponível"
+
+      - alert: KuvaAuthKeyVaultFailures
+        expr: increase(kuva_auth_keyvault_failures_total[5m]) > 0
+        for: 2m
+        labels:
+          severity: critical
+        annotations:
+          summary: "Falha ao acessar Key Vault no Kuva Auth Service"
