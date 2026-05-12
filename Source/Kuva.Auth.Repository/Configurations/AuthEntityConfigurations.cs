@@ -243,7 +243,11 @@ internal static class AuthSeedData
         Permission("02000000-0000-0000-0000-000000000014", PermissionNames.AdminStoresCreate),
         Permission("02000000-0000-0000-0000-000000000015", PermissionNames.AdminStoresUpdate),
         Permission("02000000-0000-0000-0000-000000000016", PermissionNames.AdminUsersRead),
-        Permission("02000000-0000-0000-0000-000000000017", PermissionNames.AdminAuditRead)
+        Permission("02000000-0000-0000-0000-000000000017", PermissionNames.AdminAuditRead),
+        Permission("02000000-0000-0000-0000-000000000018", PermissionNames.CatalogView),
+        Permission("02000000-0000-0000-0000-000000000019", PermissionNames.CatalogEdit),
+        Permission("02000000-0000-0000-0000-000000000020", PermissionNames.PriceEdit),
+        Permission("02000000-0000-0000-0000-000000000021", PermissionNames.SkuEnableDisable)
     ];
 
     public static readonly RolePermission[] RolePermissions = BuildRolePermissions();
@@ -274,9 +278,44 @@ internal static class AuthSeedData
         var permissionMap = Permissions.ToDictionary(x => x.Name, x => x.Id);
         var pairs = new List<(string Role, string Permission)>();
         pairs.AddRange(PermissionNames.Consumer.Select(x => (RoleNames.Consumer, x)));
-        pairs.AddRange(PermissionNames.StoreOperator.Select(x => (RoleNames.StoreOperator, x)));
-        pairs.AddRange(PermissionNames.StoreOwner.Select(x => (RoleNames.StoreOwner, x)));
-        pairs.AddRange(PermissionNames.KuvaAdmin.Select(x => (RoleNames.KuvaAdmin, x)));
+        pairs.AddRange(new[]
+        {
+            PermissionNames.MerchantOrdersRead,
+            PermissionNames.MerchantOrdersUpdateStatus,
+            PermissionNames.MerchantMediaDownload,
+            PermissionNames.MerchantStoreRead
+        }.Select(x => (RoleNames.StoreOperator, x)));
+        pairs.AddRange(new[]
+        {
+            PermissionNames.MerchantOrdersRead,
+            PermissionNames.MerchantOrdersUpdateStatus,
+            PermissionNames.MerchantMediaDownload,
+            PermissionNames.MerchantStoreRead,
+            PermissionNames.MerchantPricingRead,
+            PermissionNames.MerchantPricingUpdate,
+            PermissionNames.MerchantOperatorsRead
+        }.Select(x => (RoleNames.StoreOwner, x)));
+        pairs.AddRange(new[]
+        {
+            PermissionNames.AdminStoresRead,
+            PermissionNames.AdminStoresCreate,
+            PermissionNames.AdminStoresUpdate,
+            PermissionNames.AdminUsersRead,
+            PermissionNames.AdminAuditRead
+        }.Select(x => (RoleNames.KuvaAdmin, x)));
+        pairs.AddRange(new[]
+        {
+            (RoleNames.StoreOperator, PermissionNames.CatalogView),
+            (RoleNames.StoreOperator, PermissionNames.PriceEdit),
+            (RoleNames.StoreOwner, PermissionNames.CatalogView),
+            (RoleNames.StoreOwner, PermissionNames.CatalogEdit),
+            (RoleNames.StoreOwner, PermissionNames.PriceEdit),
+            (RoleNames.StoreOwner, PermissionNames.SkuEnableDisable),
+            (RoleNames.KuvaAdmin, PermissionNames.CatalogView),
+            (RoleNames.KuvaAdmin, PermissionNames.CatalogEdit),
+            (RoleNames.KuvaAdmin, PermissionNames.PriceEdit),
+            (RoleNames.KuvaAdmin, PermissionNames.SkuEnableDisable)
+        });
 
         return pairs.Select((pair, index) => new RolePermission
         {

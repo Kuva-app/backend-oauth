@@ -14,6 +14,10 @@ public static class PermissionNames
     public const string MerchantPricingRead = "merchant.pricing.read";
     public const string MerchantPricingUpdate = "merchant.pricing.update";
     public const string MerchantOperatorsRead = "merchant.operators.read";
+    public const string CatalogView = "CATALOG_VIEW";
+    public const string CatalogEdit = "CATALOG_EDIT";
+    public const string PriceEdit = "PRICE_EDIT";
+    public const string SkuEnableDisable = "SKU_ENABLE_DISABLE";
     public const string AdminStoresRead = "admin.stores.read";
     public const string AdminStoresCreate = "admin.stores.create";
     public const string AdminStoresUpdate = "admin.stores.update";
@@ -27,17 +31,20 @@ public static class PermissionNames
 
     public static readonly string[] StoreOperator =
     [
-        MerchantOrdersRead, MerchantOrdersUpdateStatus, MerchantMediaDownload, MerchantStoreRead
+        MerchantOrdersRead, MerchantOrdersUpdateStatus, MerchantMediaDownload, MerchantStoreRead,
+        CatalogView, PriceEdit
     ];
 
     public static readonly string[] StoreOwner =
     [
         MerchantOrdersRead, MerchantOrdersUpdateStatus, MerchantMediaDownload, MerchantStoreRead,
-        MerchantPricingRead, MerchantPricingUpdate, MerchantOperatorsRead
+        MerchantPricingRead, MerchantPricingUpdate, MerchantOperatorsRead,
+        CatalogView, CatalogEdit, PriceEdit, SkuEnableDisable
     ];
 
     public static readonly string[] KuvaAdmin =
     [
-        AdminStoresRead, AdminStoresCreate, AdminStoresUpdate, AdminUsersRead, AdminAuditRead
+        AdminStoresRead, AdminStoresCreate, AdminStoresUpdate, AdminUsersRead, AdminAuditRead,
+        CatalogView, CatalogEdit, PriceEdit, SkuEnableDisable
     ];
 }

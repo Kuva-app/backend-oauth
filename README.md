@@ -13,6 +13,19 @@ Microsserviço de autenticação e autorização da plataforma Kuva. Ele cobre c
 - `Kuva.Auth.EFMigrations`: migrations isoladas do Entity Framework Core.
 - `Kuva.Auth.Tests`: testes unitários com NUnit, Moq, FluentAssertions e EF InMemory.
 
+## Catálogo e Preços
+
+Conforme a arquitetura MVP, o Auth Service não assume regras de catálogo. Ele apenas emite roles, permissões e `storeId` para que BFFs e o Catalog & Pricing Service validem autorização e isolamento por loja.
+
+Permissões preparadas para o catálogo:
+
+- `CATALOG_VIEW`
+- `CATALOG_EDIT`
+- `PRICE_EDIT`
+- `SKU_ENABLE_DISABLE`
+
+No MVP, `STORE_OPERATOR` recebe `CATALOG_VIEW` e `PRICE_EDIT` para consulta do catálogo e edição de preços da loja vinculada. `STORE_OWNER` e `KUVA_ADMIN` recebem também `CATALOG_EDIT` e `SKU_ENABLE_DISABLE`.
+
 ## Requisitos
 
 - .NET SDK 10.
