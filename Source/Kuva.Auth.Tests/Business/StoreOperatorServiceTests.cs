@@ -25,6 +25,10 @@ public sealed class StoreOperatorServiceTests : TestBase
         login.User.Roles.Should().Contain(RoleNames.StoreOperator);
         login.User.StoreId.Should().Be(storeId);
         login.User.Permissions.Should().Contain(PermissionNames.MerchantOrdersRead);
+        login.User.Permissions.Should().Contain(PermissionNames.CatalogView);
+        login.User.Permissions.Should().Contain(PermissionNames.PriceEdit);
+        login.User.Permissions.Should().NotContain(PermissionNames.CatalogEdit);
+        login.User.Permissions.Should().NotContain(PermissionNames.SkuEnableDisable);
     }
 
     [Test]
