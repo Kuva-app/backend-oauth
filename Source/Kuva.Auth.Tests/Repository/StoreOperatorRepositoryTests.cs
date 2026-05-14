@@ -1,4 +1,3 @@
-using FluentAssertions;
 using Kuva.Auth.Entities.Entities;
 using Kuva.Auth.Entities.Enums;
 using Kuva.Auth.Repository.Context;
@@ -21,6 +20,6 @@ public sealed class StoreOperatorRepositoryTests : TestBase
 
         var result = await provider.GetRequiredService<IStoreOperatorRepository>().GetActiveByUserIdAsync(user.Id, CancellationToken.None);
 
-        result.Should().BeNull();
+        Assert.That(result, Is.Null);
     }
 }

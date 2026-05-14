@@ -1,4 +1,3 @@
-using FluentAssertions;
 using Kuva.Auth.Business.Interfaces;
 using Kuva.Auth.Business.Models;
 using Kuva.Auth.Entities.Dtos.Requests;
@@ -23,7 +22,7 @@ public sealed class AuthControllerTests
 
         var result = await controller.Register(new RegisterConsumerRequest("Cliente", "cliente@email.com", null, "SenhaSegura@123", "1.0", "1.0", true), CancellationToken.None);
 
-        result.Should().BeOfType<CreatedAtActionResult>();
+        Assert.That(result, Is.TypeOf<CreatedAtActionResult>());
     }
 
     [Test]
@@ -37,7 +36,7 @@ public sealed class AuthControllerTests
 
         var result = await controller.Login(new LoginRequest("cliente@email.com", "SenhaSegura@123"), CancellationToken.None);
 
-        result.Should().BeOfType<OkObjectResult>();
+        Assert.That(result, Is.TypeOf<OkObjectResult>());
     }
 
     [Test]
@@ -49,7 +48,7 @@ public sealed class AuthControllerTests
 
         var result = await controller.Logout(new LogoutRequest("refresh"), CancellationToken.None);
 
-        result.Should().BeOfType<NoContentResult>();
+        Assert.That(result, Is.TypeOf<NoContentResult>());
     }
 
     private static AuthTokenResponse Response() =>

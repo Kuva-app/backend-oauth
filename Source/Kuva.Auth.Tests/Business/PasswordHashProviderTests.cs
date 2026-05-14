@@ -1,4 +1,3 @@
-using FluentAssertions;
 using Kuva.Auth.Business.Interfaces;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -12,9 +11,9 @@ public sealed class PasswordHashProviderTests : TestBase
         using var provider = CreateServices();
         var hashProvider = provider.GetRequiredService<IPasswordHashProvider>();
         var hash = hashProvider.HashPassword("SenhaSegura@123");
-        hash.Should().NotBe("SenhaSegura@123");
-        hashProvider.VerifyPassword(hash, "SenhaSegura@123").Should().BeTrue();
-        hashProvider.VerifyPassword(hash, "SenhaErrada@123").Should().BeFalse();
-        hashProvider.NeedsRehash(hash).Should().BeFalse();
+        Assert.That(hash, Is.Not.EqualTo("SenhaSegura@123"));
+        Assert.That(hashProvider.VerifyPassword(hash, "SenhaSegura@123"), Is.True);
+        Assert.That(hashProvider.VerifyPassword(hash, "SenhaErrada@123"), Is.False);
+        Assert.That(hashProvider.NeedsRehash(hash), Is.False);
     }
 }

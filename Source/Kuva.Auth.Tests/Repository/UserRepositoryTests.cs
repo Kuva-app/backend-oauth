@@ -1,4 +1,3 @@
-using FluentAssertions;
 using Kuva.Auth.Entities.Entities;
 using Kuva.Auth.Entities.ValueObjects;
 using Kuva.Auth.Repository.Context;
@@ -20,7 +19,7 @@ public sealed class UserRepositoryTests : TestBase
 
         var user = await provider.GetRequiredService<IUserRepository>().GetByNormalizedEmailAsync(email.NormalizedValue, CancellationToken.None);
 
-        user.Should().NotBeNull();
-        user!.Email.Should().Be("repo@test.com");
+        Assert.That(user, Is.Not.Null);
+        Assert.That(user!.Email, Is.EqualTo("repo@test.com"));
     }
 }

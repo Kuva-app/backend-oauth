@@ -1,4 +1,3 @@
-using FluentAssertions;
 using Kuva.Auth.Entities.Entities;
 using Kuva.Auth.Repository.Context;
 using Kuva.Auth.Repository.Interfaces;
@@ -21,6 +20,6 @@ public sealed class RefreshTokenRepositoryTests : TestBase
 
         var tokens = await provider.GetRequiredService<IRefreshTokenRepository>().GetActiveByUserIdAsync(user.Id, DateTimeOffset.UtcNow, CancellationToken.None);
 
-        tokens.Should().ContainSingle(x => x.TokenHash == "active");
+        Assert.That(tokens, Has.Exactly(1).Matches<RefreshToken>(x => x.TokenHash == "active"));
     }
 }

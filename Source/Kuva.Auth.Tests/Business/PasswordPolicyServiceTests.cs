@@ -1,4 +1,3 @@
-using FluentAssertions;
 using Kuva.Auth.Business.Interfaces;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -11,7 +10,7 @@ public sealed class PasswordPolicyServiceTests : TestBase
     {
         using var provider = CreateServices();
         var result = provider.GetRequiredService<IPasswordPolicyService>().Validate("SenhaSegura@123");
-        result.IsValid.Should().BeTrue();
+        Assert.That(result.IsValid, Is.True);
     }
 
     [TestCase("Curta@1", "pelo menos")]
@@ -23,7 +22,7 @@ public sealed class PasswordPolicyServiceTests : TestBase
     {
         using var provider = CreateServices();
         var result = provider.GetRequiredService<IPasswordPolicyService>().Validate(password);
-        result.IsValid.Should().BeFalse();
-        result.Violations.Should().Contain(v => v.Contains(expectedViolation, StringComparison.OrdinalIgnoreCase));
+        Assert.That(result.IsValid, Is.False);
+        Assert.That(result.Violations, Has.Some.Matches<string>(v => v.Contains(expectedViolation, StringComparison.OrdinalIgnoreCase)));
     }
 }

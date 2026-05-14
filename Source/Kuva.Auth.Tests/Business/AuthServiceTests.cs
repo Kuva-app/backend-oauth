@@ -1,4 +1,3 @@
-using FluentAssertions;
 using Kuva.Auth.Business.Interfaces;
 using Kuva.Auth.Business.Models;
 using Kuva.Auth.Entities.Constants;
@@ -20,19 +19,19 @@ public sealed class AuthServiceTests : TestBase
 
         var response = await service.RegisterConsumerAsync(ConsumerRequest(), RequestContext.Empty, CancellationToken.None);
 
-        response.AccessToken.Should().NotBeNullOrWhiteSpace();
-        response.RefreshToken.Should().NotBeNullOrWhiteSpace();
-        response.User.Email.Should().Be("cliente@email.com");
-        response.User.Roles.Should().Contain(RoleNames.Consumer);
-        response.User.Permissions.Should().Contain(PermissionNames.OrdersCreate);
+        Assert.That(string.IsNullOrWhiteSpace(response.AccessToken), Is.False);
+        Assert.That(string.IsNullOrWhiteSpace(response.RefreshToken), Is.False);
+        Assert.That(response.User.Email, Is.EqualTo("cliente@email.com"));
+        Assert.That(response.User.Roles, Does.Contain(RoleNames.Consumer));
+        Assert.That(response.User.Permissions, Does.Contain(PermissionNames.OrdersCreate));
 
         var db = provider.GetRequiredService<AuthDbContext>();
         var user = await db.Users.Include(x => x.Credential).FirstAsync();
-        user.NormalizedEmail.Should().Be("CLIENTE@EMAIL.COM");
-        user.Credential!.PasswordHash.Should().NotBe("SenhaSegura@123");
-        db.TermsAcceptances.Should().HaveCount(1);
-        db.UserConsents.Should().HaveCount(1);
-        db.AuthAuditLogs.Should().Contain(x => x.EventType == AuthAuditEventType.UserRegistered && x.Result == AuthAuditResult.Succeeded);
+        Assert.That(user.NormalizedEmail, Is.EqualTo("CLIENTE@EMAIL.COM"));
+        Assert.That(user.Credential!.PasswordHash, Is.Not.EqualTo("SenhaSegura@123"));
+        Assert.That(db.TermsAcceptances.Count(), Is.EqualTo(1));
+        Assert.That(db.UserConsents.Count(), Is.EqualTo(1));
+        Assert.That(db.AuthAuditLogs, Has.Some.Matches<Entities.Entities.AuthAuditLog>(x => x.EventType == AuthAuditEventType.UserRegistered && x.Result == AuthAuditResult.Succeeded));
     }
 
     [Test]
@@ -42,8 +41,8 @@ public sealed class AuthServiceTests : TestBase
         var service = provider.GetRequiredService<IAuthService>();
         await service.RegisterConsumerAsync(ConsumerRequest(), RequestContext.Empty, CancellationToken.None);
 
-        var act = () => service.RegisterConsumerAsync(ConsumerRequest(), RequestContext.Empty, CancellationToken.None);
-        await act.Should().ThrowAsync<AuthException>().Where(x => x.StatusCode == 409);
+        var ex = Assert.ThrowsAsync<AuthException>(async () => await service.RegisterConsumerAsync(ConsumerRequest(), RequestContext.Empty, CancellationToken.None));
+        Assert.That(ex!.StatusCode, Is.EqualTo(409));
     }
 
     [Test]
@@ -52,8 +51,8 @@ public sealed class AuthServiceTests : TestBase
         using var provider = CreateServices();
         var service = provider.GetRequiredService<IAuthService>();
 
-        var act = () => service.RegisterConsumerAsync(ConsumerRequest() with { Password = "weak" }, RequestContext.Empty, CancellationToken.None);
-        await act.Should().ThrowAsync<AuthException>().Where(x => x.Code == "weak_password");
+        var ex = Assert.ThrowsAsync<AuthException>(async () => await service.RegisterConsumerAsync(ConsumerRequest() with { Password = "weak" }, RequestContext.Empty, CancellationToken.None));
+        Assert.That(ex!.Code, Is.EqualTo("weak_password"));
     }
 
     [Test]
@@ -65,8 +64,8 @@ public sealed class AuthServiceTests : TestBase
 
         var response = await service.LoginAsync(new LoginRequest("cliente@email.com", "SenhaSegura@123"), RequestContext.Empty, CancellationToken.None);
 
-        response.AccessToken.Should().NotBeNullOrWhiteSpace();
-        provider.GetRequiredService<AuthDbContext>().Users.Single().LastLoginAt.Should().NotBeNull();
+        Assert.That(string.IsNullOrWhiteSpace(response.AccessToken), Is.False);
+        Assert.That(provider.GetRequiredService<AuthDbContext>().Users.Single().LastLoginAt, Is.Not.Null);
     }
 
     [Test]
@@ -76,15 +75,15 @@ public sealed class AuthServiceTests : TestBase
         var service = provider.GetRequiredService<IAuthService>();
         await service.RegisterConsumerAsync(ConsumerRequest(), RequestContext.Empty, CancellationToken.None);
 
-        var badPassword = () => service.LoginAsync(new LoginRequest("cliente@email.com", "SenhaErrada@123"), RequestContext.Empty, CancellationToken.None);
-        await badPassword.Should().ThrowAsync<AuthException>().Where(x => x.StatusCode == 401);
+        var badPasswordException = Assert.ThrowsAsync<AuthException>(async () => await service.LoginAsync(new LoginRequest("cliente@email.com", "SenhaErrada@123"), RequestContext.Empty, CancellationToken.None));
+        Assert.That(badPasswordException!.StatusCode, Is.EqualTo(401));
 
         var db = provider.GetRequiredService<AuthDbContext>();
         db.Users.Single().Status = UserStatus.Blocked;
         await db.SaveChangesAsync();
 
-        var blocked = () => service.LoginAsync(new LoginRequest("cliente@email.com", "SenhaSegura@123"), RequestContext.Empty, CancellationToken.None);
-        await blocked.Should().ThrowAsync<AuthException>().Where(x => x.StatusCode == 401);
+        var blockedException = Assert.ThrowsAsync<AuthException>(async () => await service.LoginAsync(new LoginRequest("cliente@email.com", "SenhaSegura@123"), RequestContext.Empty, CancellationToken.None));
+        Assert.That(blockedException!.StatusCode, Is.EqualTo(401));
     }
 
     private static RegisterConsumerRequest ConsumerRequest() =>
