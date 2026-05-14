@@ -60,8 +60,16 @@ nunit-*.xml
 
 FEATURE.md
 
-# VSCode
-.vscode/
-
 # .lscache
 **.lscache
+**.Instructions.md
+
+# Keys
+**/keys/*
+
+# VS
+**/.vs/*
+.fake
+
+# VSCODE
+**/.vscode/*

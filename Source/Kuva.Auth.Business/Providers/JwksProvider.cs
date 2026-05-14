@@ -8,16 +8,16 @@ public sealed class JwksProvider(IJwtKeyProvider keyProvider) : IJwksProvider
     public JwksResponse GetJwks()
     {
         var signingKey = keyProvider.GetSigningKey();
-        var parameters = signingKey.Rsa.ExportParameters(false);
+        var parameters = signingKey.Ecdsa.ExportParameters(false);
         return new JwksResponse(new[]
         {
             new JwksKeyResponse(
-                "RSA",
+                "EC",
                 "sig",
                 signingKey.KeyId,
-                "RS256",
-                Base64Url(parameters.Modulus!),
-                Base64Url(parameters.Exponent!))
+                "ES256",
+                Base64Url(parameters.Q.X!),
+                Base64Url(parameters.Q.Y!))
         });
     }
 

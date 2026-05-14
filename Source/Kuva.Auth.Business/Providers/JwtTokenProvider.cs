@@ -17,7 +17,7 @@ public sealed class JwtTokenProvider(IJwtKeyProvider keyProvider, IClock clock, 
         var now = clock.UtcNow;
         var expiresAt = now.AddMinutes(_options.AccessTokenMinutes);
         var signingKey = keyProvider.GetSigningKey();
-        var credentials = new SigningCredentials(new RsaSecurityKey(signingKey.Rsa) { KeyId = signingKey.KeyId }, SecurityAlgorithms.RsaSha256);
+        var credentials = new SigningCredentials(new ECDsaSecurityKey(signingKey.Ecdsa) { KeyId = signingKey.KeyId }, SecurityAlgorithms.EcdsaSha256);
         var claims = new List<Claim>
         {
             new(JwtRegisteredClaimNames.Sub, user.Id.ToString()),
