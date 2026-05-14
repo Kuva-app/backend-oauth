@@ -11,7 +11,7 @@ Microsserviço de autenticação e autorização da plataforma Kuva. Ele cobre c
 - `Kuva.Auth.Business`: regras de autenticação, hashing, JWT, JWKS, refresh token e operadores.
 - `Kuva.Auth.Service`: API ASP.NET Core, middlewares, Swagger, auth bearer, policies, health e metrics.
 - `Kuva.Auth.EFMigrations`: migrations isoladas do Entity Framework Core.
-- `Kuva.Auth.Tests`: testes unitários com NUnit, Moq, FluentAssertions e EF InMemory.
+- `Kuva.Auth.Tests`: testes unitários com NUnit, Moq e EF InMemory.
 
 ## Catálogo e Preços
 

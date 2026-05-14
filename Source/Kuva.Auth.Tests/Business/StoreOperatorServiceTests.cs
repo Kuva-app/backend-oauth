@@ -1,4 +1,3 @@
-using FluentAssertions;
 using Kuva.Auth.Business.Interfaces;
 using Kuva.Auth.Business.Models;
 using Kuva.Auth.Entities.Constants;
@@ -21,14 +20,14 @@ public sealed class StoreOperatorServiceTests : TestBase
         var created = await service.CreateAsync(storeId, Request(), RequestContext.Empty, CancellationToken.None);
         var login = await provider.GetRequiredService<IAuthService>().LoginAsync(new LoginRequest("operador@loja.com", "SenhaSegura@123"), RequestContext.Empty, CancellationToken.None);
 
-        created.StoreId.Should().Be(storeId);
-        login.User.Roles.Should().Contain(RoleNames.StoreOperator);
-        login.User.StoreId.Should().Be(storeId);
-        login.User.Permissions.Should().Contain(PermissionNames.MerchantOrdersRead);
-        login.User.Permissions.Should().Contain(PermissionNames.CatalogView);
-        login.User.Permissions.Should().Contain(PermissionNames.PriceEdit);
-        login.User.Permissions.Should().NotContain(PermissionNames.CatalogEdit);
-        login.User.Permissions.Should().NotContain(PermissionNames.SkuEnableDisable);
+        Assert.That(created.StoreId, Is.EqualTo(storeId));
+        Assert.That(login.User.Roles, Does.Contain(RoleNames.StoreOperator));
+        Assert.That(login.User.StoreId, Is.EqualTo(storeId));
+        Assert.That(login.User.Permissions, Does.Contain(PermissionNames.MerchantOrdersRead));
+        Assert.That(login.User.Permissions, Does.Contain(PermissionNames.CatalogView));
+        Assert.That(login.User.Permissions, Does.Contain(PermissionNames.PriceEdit));
+        Assert.That(login.User.Permissions, Does.Not.Contain(PermissionNames.CatalogEdit));
+        Assert.That(login.User.Permissions, Does.Not.Contain(PermissionNames.SkuEnableDisable));
     }
 
     [Test]
@@ -39,8 +38,8 @@ public sealed class StoreOperatorServiceTests : TestBase
         var storeId = Guid.NewGuid();
         await service.CreateAsync(storeId, Request(), RequestContext.Empty, CancellationToken.None);
 
-        var act = () => service.CreateAsync(storeId, Request(), RequestContext.Empty, CancellationToken.None);
-        await act.Should().ThrowAsync<AuthException>().Where(x => x.StatusCode == 409);
+        var ex = Assert.ThrowsAsync<AuthException>(async () => await service.CreateAsync(storeId, Request(), RequestContext.Empty, CancellationToken.None));
+        Assert.That(ex!.StatusCode, Is.EqualTo(409));
     }
 
     [Test]
@@ -52,8 +51,8 @@ public sealed class StoreOperatorServiceTests : TestBase
 
         await service.UpdateStatusAsync(created.Id, StoreOperatorStatus.Blocked, RequestContext.Empty, CancellationToken.None);
 
-        var act = () => provider.GetRequiredService<IAuthService>().LoginAsync(new LoginRequest("operador@loja.com", "SenhaSegura@123"), RequestContext.Empty, CancellationToken.None);
-        await act.Should().ThrowAsync<AuthException>().Where(x => x.StatusCode == 403);
+        var ex = Assert.ThrowsAsync<AuthException>(async () => await provider.GetRequiredService<IAuthService>().LoginAsync(new LoginRequest("operador@loja.com", "SenhaSegura@123"), RequestContext.Empty, CancellationToken.None));
+        Assert.That(ex!.StatusCode, Is.EqualTo(403));
     }
 
     [Test]
@@ -66,7 +65,7 @@ public sealed class StoreOperatorServiceTests : TestBase
 
         var operators = await service.ListByStoreAsync(storeId, CancellationToken.None);
 
-        operators.Should().ContainSingle(x => x.Email == "operador@loja.com");
+        Assert.That(operators, Has.Exactly(1).Matches<StoreOperatorResponse>(x => x.Email == "operador@loja.com"));
     }
 
     private static CreateStoreOperatorRequest Request() =>

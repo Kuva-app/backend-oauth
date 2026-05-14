@@ -1,4 +1,3 @@
-using FluentAssertions;
 using Kuva.Auth.Business.Interfaces;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -13,8 +12,8 @@ public sealed class TokenHashProviderTests : TestBase
         var tokenProvider = provider.GetRequiredService<ITokenHashProvider>();
         var token = tokenProvider.GenerateToken(32);
         var hash = tokenProvider.HashToken(token);
-        token.Should().NotBeNullOrWhiteSpace();
-        hash.Should().NotBe(token);
-        tokenProvider.HashToken(token).Should().Be(hash);
+        Assert.That(string.IsNullOrWhiteSpace(token), Is.False);
+        Assert.That(hash, Is.Not.EqualTo(token));
+        Assert.That(tokenProvider.HashToken(token), Is.EqualTo(hash));
     }
 }

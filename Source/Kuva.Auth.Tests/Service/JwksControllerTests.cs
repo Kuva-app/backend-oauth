@@ -1,4 +1,3 @@
-using FluentAssertions;
 using Kuva.Auth.Business.Interfaces;
 using Kuva.Auth.Entities.Dtos.Responses;
 using Kuva.Auth.Service.Controllers;
@@ -18,6 +17,6 @@ public sealed class JwksControllerTests
 
         var result = controller.Get();
 
-        result.Should().BeOfType<OkObjectResult>();
+        Assert.That(result, Is.TypeOf<OkObjectResult>());
     }
 }

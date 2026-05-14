@@ -1,4 +1,3 @@
-using FluentAssertions;
 using Kuva.Auth.Business.Interfaces;
 using Kuva.Auth.Business.Models;
 using Kuva.Auth.Entities.Dtos.Requests;
@@ -19,10 +18,10 @@ public sealed class RefreshTokenServiceTests : TestBase
 
         var rotated = await refresh.RefreshAsync(new RefreshTokenRequest(session.RefreshToken), RequestContext.Empty, CancellationToken.None);
 
-        rotated.RefreshToken.Should().NotBe(session.RefreshToken);
+        Assert.That(rotated.RefreshToken, Is.Not.EqualTo(session.RefreshToken));
         var db = provider.GetRequiredService<AuthDbContext>();
-        db.RefreshTokens.Count().Should().Be(2);
-        db.RefreshTokens.Single(x => x.ReplacedByTokenId != null).RevokedAt.Should().NotBeNull();
+        Assert.That(db.RefreshTokens.Count(), Is.EqualTo(2));
+        Assert.That(db.RefreshTokens.Single(x => x.ReplacedByTokenId != null).RevokedAt, Is.Not.Null);
     }
 
     [Test]
@@ -34,8 +33,8 @@ public sealed class RefreshTokenServiceTests : TestBase
         var session = await auth.RegisterConsumerAsync(Request(), RequestContext.Empty, CancellationToken.None);
         await refresh.RevokeAsync(session.RefreshToken, RequestContext.Empty, CancellationToken.None);
 
-        var act = () => refresh.RefreshAsync(new RefreshTokenRequest(session.RefreshToken), RequestContext.Empty, CancellationToken.None);
-        await act.Should().ThrowAsync<AuthException>().Where(x => x.StatusCode == 401);
+        var ex = Assert.ThrowsAsync<AuthException>(async () => await refresh.RefreshAsync(new RefreshTokenRequest(session.RefreshToken), RequestContext.Empty, CancellationToken.None));
+        Assert.That(ex!.StatusCode, Is.EqualTo(401));
     }
 
     [Test]
@@ -48,7 +47,7 @@ public sealed class RefreshTokenServiceTests : TestBase
 
         await refresh.RevokeAllActiveAsync(session.User.Id, RequestContext.Empty, CancellationToken.None);
 
-        provider.GetRequiredService<AuthDbContext>().RefreshTokens.Should().OnlyContain(x => x.RevokedAt != null);
+        Assert.That(provider.GetRequiredService<AuthDbContext>().RefreshTokens, Is.All.Matches<Entities.Entities.RefreshToken>(x => x.RevokedAt != null));
     }
 
     private static Kuva.Auth.Entities.Dtos.Requests.RegisterConsumerRequest Request() =>
