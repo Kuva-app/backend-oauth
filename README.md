@@ -148,15 +148,14 @@ dotnet tool run dotnet-ef database update \
 
 ```bash
 dotnet ef migrations script \
-  --project Source/Kuva.Notifications.EFMigrations \
-  --startup-project Source/Kuva.Notifications.Service \
+  --project Source/Kuva.Auth.EFMigrations \
   --idempotent \
   --output migration.sql
 ```
 
 ```powershell
 dotnet ef migrations script `
-    --project .\Source\Kuva.Notifications.EFMigrations\ `
+    --project .\Source\Kuva.Auth.EFMigrations\ `
     --idempotent `
     --output migration.sql
 ```
