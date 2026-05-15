@@ -74,11 +74,48 @@ PasswordPolicy__MinimumLength
 Cors__AllowedOrigins__0
 ```
 
+## Gerar as chaves
+
+```bash
+mkdir keys
+
+openssl ecparam \
+  -name prime256v1 \
+  -genkey \
+  -noout \
+  -out keys/jwt_ec_private.pem
+
+openssl pkey \
+  -in keys/jwt_ec_private.pem \
+  -pubout \
+  -out keys/jwt_ec_public.pem
+```
+
 ## User Secrets
 
 ```bash
-dotnet user-secrets set "ConnectionStrings:AuthDatabase" "Server=localhost,1433;Database=KuvaAuth;User Id=sa;Password=Your_strong_password123;TrustServerCertificate=True" --project Source/Kuva.Auth.Service
+dotnet user-secrets set "ConnectionStrings:AuthDatabase" "Server=tcp:localhost,1433;Persist Security Info=False;User ID=sa;Password=Change_this_password_123!;MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=True;Connection Timeout=30;Database=KuvaAuth;" --project Source/Kuva.Auth.Service
+
 dotnet user-secrets set "Jwt:PrivateKeyPem" "<PEM_PRIVADO>" --project Source/Kuva.Auth.Service
+```
+
+```powershell
+dotnet user-secrets set "ConnectionStrings:AuthDatabase" "Server=tcp:localhost,1433;Persist Security Info=False;User ID=sa;Password=Change_this_password_123!;MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=True;Connection Timeout=30;Database=KuvaAuth;" --project .\Kuva.Auth.Service
+
+dotnet user-secrets set "Jwt:PrivateKeyPem" "<PEM_PRIVADO>" --project .\Kuva.Auth.Service
+```
+
+
+ou
+
+```bash
+dotnet user-secrets set "Jwt:PrivateKeyPem" "$(cat keys/jwt_ec_private.pem)" --project Source/Kuva.Auth.Service
+```
+
+```powershell
+$pem = Get-Content -Raw .\keys\jwt_ec_private.pem
+
+dotnet user-secrets set "Jwt:PrivateKeyPem" $pem --project Source/Kuva.Auth.Service
 ```
 
 ## Azure Key Vault

@@ -9,7 +9,7 @@ services:
     environment:
       ASPNETCORE_ENVIRONMENT: Development
       ASPNETCORE_URLS: http://+:8080
-      ConnectionStrings__AuthDatabase: Server=kuva-auth-sqlserver,1433;Database=KuvaAuth;User Id=sa;Password=Your_strong_password123;TrustServerCertificate=True
+      ConnectionStrings__AuthDatabase: Server=tcp:localhost,1433;Persist Security Info=False;User ID=sa;Password=Change_this_password_123!;MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=True;Connection Timeout=30;Database=KuvaAuth;
       Jwt__Issuer: http://localhost:8081/auth
       Jwt__Audience: kuva-api
       Jwt__KeyId: kuva-auth-local
@@ -21,7 +21,7 @@ services:
     container_name: kuva-auth-sqlserver
     environment:
       ACCEPT_EULA: "Y"
-      MSSQL_SA_PASSWORD: Your_strong_password123
+      MSSQL_SA_PASSWORD: Change_this_password_123!
     ports:
       - "1433:1433"
     volumes:

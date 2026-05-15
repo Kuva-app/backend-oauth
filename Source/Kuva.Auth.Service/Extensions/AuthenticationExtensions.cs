@@ -33,7 +33,7 @@ internal sealed class ConfigureJwtBearerOptions(IJwtKeyProvider keyProvider, IOp
             ValidateAudience = true,
             ValidAudience = settings.Audience,
             ValidateIssuerSigningKey = true,
-            IssuerSigningKey = new RsaSecurityKey(signingKey.Rsa) { KeyId = signingKey.KeyId },
+            IssuerSigningKey = new ECDsaSecurityKey(signingKey.Ecdsa) { KeyId = signingKey.KeyId },
             ValidateLifetime = true,
             ClockSkew = TimeSpan.FromSeconds(30),
             NameClaimType = "sub",

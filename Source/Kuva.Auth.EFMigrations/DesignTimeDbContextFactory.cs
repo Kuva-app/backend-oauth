@@ -18,7 +18,7 @@ public sealed class DesignTimeDbContextFactory : IDesignTimeDbContextFactory<Aut
 
         var connectionString = configuration.GetConnectionString("AuthDatabase")
             ?? Environment.GetEnvironmentVariable("ConnectionStrings__AuthDatabase")
-            ?? "Server=localhost,1433;Database=KuvaAuth;User Id=sa;Password=Your_strong_password123;TrustServerCertificate=True";
+            ?? "Server=tcp:localhost,1433;Persist Security Info=False;User ID=sa;Password=Change_this_password_123!;MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=True;Connection Timeout=30;Database=KuvaAuth";
 
         var options = new DbContextOptionsBuilder<AuthDbContext>()
             .UseSqlServer(connectionString, sql => sql.MigrationsAssembly(typeof(DesignTimeDbContextFactory).Assembly.FullName))
