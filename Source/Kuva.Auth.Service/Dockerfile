@@ -8,6 +8,6 @@ FROM mcr.microsoft.com/dotnet/aspnet:10.0 AS runtime
 WORKDIR /app
 ENV ASPNETCORE_URLS=http://+:8080
 EXPOSE 8080
-COPY --from=build --chown=app:app /app/publish .
+COPY --from=build --chown=root:root --chmod=755 /app/publish .
 USER app
 ENTRYPOINT ["dotnet", "Kuva.Auth.Service.dll"]
