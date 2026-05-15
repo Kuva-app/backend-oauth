@@ -73,3 +73,5 @@ FEATURE.md
 
 # VSCODE
 **/.vscode/*
+
+*.lscache
