@@ -73,3 +73,9 @@ FEATURE.md
 
 # VSCODE
 **/.vscode/*
+
+*.lscache
+
+# Migrations
+
+migration.sql

@@ -105,7 +105,6 @@ dotnet user-secrets set "ConnectionStrings:AuthDatabase" "Server=tcp:localhost,1
 dotnet user-secrets set "Jwt:PrivateKeyPem" "<PEM_PRIVADO>" --project .\Kuva.Auth.Service
 ```
 
-
 ou
 
 ```bash
@@ -144,6 +143,24 @@ dotnet tool run dotnet-ef database update \
   --startup-project Source/Kuva.Auth.EFMigrations \
   --context AuthDbContext
 ```
+
+### Gerar script SQL (para produção/DBA)
+
+```bash
+dotnet ef migrations script \
+  --project Source/Kuva.Auth.EFMigrations \
+  --idempotent \
+  --output migration.sql
+```
+
+```powershell
+dotnet ef migrations script `
+    --project .\Source\Kuva.Auth.EFMigrations\ `
+    --idempotent `
+    --output migration.sql
+```
+
+O flag --idempotent gera um script seguro para reexecução (verifica se a migration já foi aplicada).
 
 ## Endpoints
 
